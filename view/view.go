@@ -24,7 +24,10 @@ func getChannelList(appState *state.AppState, channelDetails *tview.Flex, player
 	}
 	channelList.SetChangedFunc(func(i int, _ string, _ string, _ rune) {
 		appState.SelectCh(i)
-		bell.Ring("descriptions_update", appState.GetSelectedCh())
+
+		if err := bell.Ring("descriptions_update", appState.GetSelectedCh()); err != nil {
+			panic(err)
+		}
 	})
 	return channelList
 }
@@ -108,7 +111,11 @@ func InitApp(appState *state.AppState) {
 		}
 		return event
 	})
-	bell.Ring("descriptions_update", appState.GetSelectedCh())
+
+	if err := bell.Ring("descriptions_update", appState.GetSelectedCh()); err != nil {
+		panic(err)
+	}
+
 	if err := app.SetRoot(flexWithHeader, true).SetFocus(channelList).Run(); err != nil {
 		panic(err)
 	}

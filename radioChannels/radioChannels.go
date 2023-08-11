@@ -62,10 +62,6 @@ func getImage(url_string string) image.Image {
 	return img
 }
 
-func withoutImage(url string) image.Image {
-	return nil
-}
-
 func (radioChan RadioChan) GetDetails() string {
 	if radioChan.Dj != "" {
 		return fmt.Sprintf("%s\n\nDJ: %s\nGenre: %s\nListeners: %s", radioChan.Description, radioChan.Dj, radioChan.Genre, radioChan.Listeners)
