@@ -3,6 +3,10 @@ package radioChannels
 import (
 	"encoding/json"
 	"fmt"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 	"net/http"
 	"strings"
@@ -19,6 +23,10 @@ type rawRadioChan struct {
 	Dj          string `json:"dj"`
 	Genre       string `json:"genre"`
 	LastPlaying string `json:"lastPlaying"`
+	Image       string `json:"image"`
+	LargeImage  string `json:"largeimage"`
+	XLImage     string `json:"xlimage"`
+	Listeners   string `json:"listeners"`
 	Playlists   []playlist
 }
 type playlist struct {
@@ -34,13 +42,31 @@ type RadioChan struct {
 	Dj          string
 	Genre       string
 	StreamURL   string
+	Image       image.Image
+	LargeImage  image.Image
+	XLImage     image.Image
+	Listeners   string
+	LastPlaying string
+}
+
+func getImage(url_string string) image.Image {
+	resp, err := http.Get(url_string)
+	if err != nil || resp.StatusCode != 200 {
+		return nil
+	}
+	defer resp.Body.Close()
+	img, _, err := image.Decode(resp.Body)
+	if err != nil {
+		return nil
+	}
+	return img
 }
 
 func (radioChan RadioChan) GetDetails() string {
 	if radioChan.Dj != "" {
-		return fmt.Sprintf("%s\n\nDJ: %s\nGenre: %s", radioChan.Description, radioChan.Dj, radioChan.Genre)
+		return fmt.Sprintf("%s\n\nDJ: %s\nGenre: %s\nListeners: %s", radioChan.Description, radioChan.Dj, radioChan.Genre, radioChan.Listeners)
 	}
-	return fmt.Sprintf("%s\n\nGenre: %s", radioChan.Description, radioChan.Genre)
+	return fmt.Sprintf("%s\n\nGenre: %s\nListeners: %s", radioChan.Description, radioChan.Genre, radioChan.Listeners)
 }
 
 func findMP3Playlist(radioCh rawRadioChan) (string, error) {
@@ -110,6 +136,11 @@ func convertRawChannels(channels []rawRadioChan) ([]RadioChan, error) {
 				Dj:          ch.Dj,
 				Genre:       ch.Genre,
 				StreamURL:   streamUrl,
+				Image:       getImage(ch.Image),
+				LargeImage:  getImage(ch.LargeImage),
+				XLImage:     getImage(ch.XLImage),
+				Listeners:   ch.Listeners,
+				LastPlaying: ch.LastPlaying,
 			}
 			sem <- empty{}
 		}(i, ch)

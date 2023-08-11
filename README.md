@@ -8,23 +8,9 @@ If you enjoy listening to [SomaFM](https://somafm.com/) please support SomaFM by
 
 ## Installation
 
-### Homebrew (Mac OS & Linux)
-
-1. Install the tap
-
-```sh
-brew tap nicarl/somafm
-```
-
-2. Install somafm
-
-```sh
-brew install somafm
-```
-
 ### Install manually from release
 
-1. [Download the latest release for your platform](https://github.com/nicarl/somafm/releases)
+1. [Download the latest release for your platform](https://github.com/kromin/somafm/releases)
 2. Install to a location in your `$PATH`
 
 ### Install manually from source
@@ -39,3 +25,7 @@ brew install somafm
 ```sh
 somafm
 ```
+## Navigation
+
+Press `1` to go to Channels
+Press `2` to go to Control (Play/Pause + Volumes)
